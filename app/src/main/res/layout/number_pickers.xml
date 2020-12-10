@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.slim.timespinner.ui.TimerViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_spinners">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/numberPicker_hours"
+                style="@style/Widget.NumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                app:np_max="23"
+                app:np_min="0"
+                app:np_onValueChange="@{viewmodel.onScrollStateChange}"
+                app:np_value="@{viewmodel.hoursPicker}" />
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/shape_divider" />
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/numberPicker_minutes"
+                style="@style/Widget.NumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                app:np_max="59"
+                app:np_min="0"
+                app:np_onValueChange="@{viewmodel.onScrollStateChange}"
+                app:np_value="@{viewmodel.minutesPicker}" />
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/shape_divider" />
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/numberPicker_seconds"
+                style="@style/Widget.NumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                app:np_max="59"
+                app:np_min="0"
+                app:np_onValueChange="@{viewmodel.onScrollStateChange}"
+                app:np_value="@{viewmodel.secondsPicker}" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:src="@drawable/ic_cursor_left"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/ic_cursor_right"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+    </FrameLayout>
+</layout>
