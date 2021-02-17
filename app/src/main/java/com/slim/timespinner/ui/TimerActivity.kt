@@ -13,9 +13,8 @@ class TimerActivity : AppCompatActivity() {
 
     private val viewModel: TimerViewModel by viewModels {
         TimerViewModelFactory(
-                application,
-                SoundPlayer(application),
-                PrefProvider(application)
+            SoundPlayer(application),
+            PrefProvider(application)
         )
     }
     private lateinit var binding: ActivityTimerBinding

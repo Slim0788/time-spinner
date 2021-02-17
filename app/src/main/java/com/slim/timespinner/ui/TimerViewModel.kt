@@ -1,9 +1,8 @@
 package com.slim.timespinner.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import com.shawnlin.numberpicker.NumberPicker
 import com.slim.timespinner.R
 import com.slim.timespinner.settings.PrefProvider
@@ -16,10 +15,9 @@ private const val hoursInMilli = minutesInMilli * 60    //1 hour = 60 x 60 = 360
 private const val COUNT_DOWN_INTERVAL = 1000L           //1 second - count interval
 
 class TimerViewModel(
-        application: Application,
-        private val soundPlayer: SoundPlayer,
-        private val prefProvider: PrefProvider
-) : AndroidViewModel(application) {
+    private val soundPlayer: SoundPlayer,
+    private val prefProvider: PrefProvider
+) : ViewModel() {
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val toggleButtonObserver = Observer(::toggleTimer)
@@ -35,26 +33,26 @@ class TimerViewModel(
     }
 
     private fun getCountDown() =
-            CountDownTimer(COUNT_DOWN_INTERVAL, object : CountDownTimer.OnCountDownListener {
+        CountDownTimer(COUNT_DOWN_INTERVAL, object : CountDownTimer.OnCountDownListener {
 
-                override fun onTick(millisUntilFinished: Long) {
-                    if (millisUntilFinished != 0L)
-                        setNumbersToPickers(millisUntilFinished + COUNT_DOWN_INTERVAL)
-                    else
-                        setNumbersToPickers(millisUntilFinished)
-                }
+            override fun onTick(millisUntilFinished: Long) {
+                if (millisUntilFinished != 0L)
+                    setNumbersToPickers(millisUntilFinished + COUNT_DOWN_INTERVAL)
+                else
+                    setNumbersToPickers(millisUntilFinished)
+            }
 
-                override fun onFinish() {
-                    toggleButtonState.value = false
-                    soundPlayer.play()
-                    setNumbersToPickers(prefProvider.lastTime)
-                }
-            })
+            override fun onFinish() {
+                toggleButtonState.value = false
+                soundPlayer.play()
+                setNumbersToPickers(prefProvider.lastTime)
+            }
+        })
 
     private fun getMillisFromPickers() =
-            (hoursPicker.value!! * hoursInMilli +
-                    minutesPicker.value!! * minutesInMilli +
-                    secondsPicker.value!! * secondsInMilli).toLong()
+        (hoursPicker.value!! * hoursInMilli +
+                minutesPicker.value!! * minutesInMilli +
+                secondsPicker.value!! * secondsInMilli).toLong()
 
     private fun setNumbersToPickers(timestamp: Long) {
         var timeRest = timestamp.toInt()

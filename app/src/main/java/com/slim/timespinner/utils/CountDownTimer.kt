@@ -7,8 +7,9 @@ import android.os.SystemClock
 
 private const val MSG = 1
 
-class CountDownTimer(private val countDownInterval: Long,
-                     private val onCountDownListener: OnCountDownListener
+class CountDownTimer(
+    private val countDownInterval: Long,
+    private val onCountDownListener: OnCountDownListener
 ) {
     interface OnCountDownListener {
 
@@ -70,7 +71,7 @@ class CountDownTimer(private val countDownInterval: Long,
     /**
      * Handles counting down
      */
-    private val handler: Handler = object : Handler(Looper.myLooper()!!) {
+    private val handler: Handler = object : Handler(Looper.getMainLooper()) {
 
         override fun handleMessage(msg: Message) {
 

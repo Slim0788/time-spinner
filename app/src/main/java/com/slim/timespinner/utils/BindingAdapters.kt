@@ -21,8 +21,11 @@ object BindingAdapters {
 
     @BindingAdapter(value = ["app:np_onValueChange", "app:np_valueAttrChanged"], requireAll = false)
     @JvmStatic
-    fun setListeners(view: NumberPicker, listener: NumberPicker.OnValueChangeListener?,
-                     attrChange: InverseBindingListener?) {
+    fun setListeners(
+        view: NumberPicker,
+        listener: NumberPicker.OnValueChangeListener?,
+        attrChange: InverseBindingListener?
+    ) {
         if (attrChange == null) {
             view.setOnValueChangedListener(listener)
         } else {

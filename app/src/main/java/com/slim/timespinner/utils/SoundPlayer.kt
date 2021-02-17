@@ -12,13 +12,13 @@ class SoundPlayer(context: Context) {
 
     private fun createSoundPoolWithBuilder(): SoundPool {
         val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
+            .setUsage(AudioAttributes.USAGE_GAME)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
         return SoundPool.Builder()
-                .setAudioAttributes(attributes)
-                .setMaxStreams(1)
-                .build()
+            .setAudioAttributes(attributes)
+            .setMaxStreams(1)
+            .build()
     }
 
     fun play() {
