@@ -6,16 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.slim.timespinner.R
 import com.slim.timespinner.databinding.ActivityTimerBinding
-import com.slim.timespinner.settings.PrefProvider
-import com.slim.timespinner.utils.SoundPlayer
 
 class TimerActivity : AppCompatActivity() {
 
     private val viewModel: TimerViewModel by viewModels {
-        TimerViewModelFactory(
-            SoundPlayer(application),
-            PrefProvider(application)
-        )
+        TimerViewModelFactory(application)
     }
     private lateinit var binding: ActivityTimerBinding
 

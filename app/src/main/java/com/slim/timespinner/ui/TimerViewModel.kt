@@ -100,4 +100,5 @@ class TimerViewModel(
     override fun onCleared() {
         toggleButtonState.removeObserver(toggleButtonObserver)
     }
+
 }
