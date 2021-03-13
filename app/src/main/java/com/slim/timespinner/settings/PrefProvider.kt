@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-private const val PREF_PACKAGE_NAME = "com.slim.timer"
+private const val PREF_PACKAGE_NAME = "com.slim.timespinner.settings"
 private const val PREF_KEY_LAST_TIME = "lastTime"
 
-private const val DEFAULT_COUNT_DOWN_TIME = 30000L  //30 seconds
+private const val DEFAULT_COUNT_DOWN_TIME = 30000L  // 30 seconds default value for timer
 
 class PrefProvider(context: Context) {
 
