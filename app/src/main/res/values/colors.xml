@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base colors -->
     <color name="blue_700">#1E316A</color>
+    <color name="blue_500">#293386</color>
+    <color name="blue_100">#22AAF3</color>
     <color name="white">#FAFAFA</color>
+
+    <!-- Colors for gradients -->
+    <color name="gradient_start_start">#5734F7</color>
+    <color name="gradient_end_start">#22AAF3</color>
+    <color name="gradient_start_stop">#FE2F57</color>
+    <color name="gradient_end_stop">#FF6A28</color>
 </resources>
