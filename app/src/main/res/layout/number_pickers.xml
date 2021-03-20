@@ -75,14 +75,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
-            android:src="@drawable/ic_cursor_left"
+            android:src="@drawable/img_cursor_left"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
-            android:src="@drawable/ic_cursor_right"
+            android:src="@drawable/img_cursor_right"
             tools:ignore="ContentDescription,RtlHardcoded" />
     </FrameLayout>
 </layout>
