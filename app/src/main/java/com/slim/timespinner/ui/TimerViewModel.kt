@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.*
 import android.os.IBinder
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -35,11 +34,10 @@ class TimerViewModel(
     @SuppressLint("StaticFieldLeak")
     private var service: TimerService? = null
     private var bound = false
-    private val bindServiceIntent = Intent(context, TimerService::class.java)
+    private val serviceIntent = Intent(context, TimerService::class.java)
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            // TODO verify intent
             setNumbersToPickers(prefProvider.lastTime)
             toggleButtonState.value = false
         }
@@ -48,9 +46,10 @@ class TimerViewModel(
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, iBinder: IBinder?) {
             val binder = iBinder as TimerServiceBinder
-            service = binder.service
+            service = binder.service.also {
+                it.countDownMillis.observeForever(countDownMillisObserver)
+            }
             bound = true
-            service?.countDownMillis?.observeForever(countDownMillisObserver)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -98,25 +97,35 @@ class TimerViewModel(
     }
 
     private fun toggleTimer(isChecked: Boolean) {
-        if (isChecked) {
-            val time = getMillisFromPickers()
-            prefProvider.lastTime = time
-            service?.startTimer(time)
-        } else {
-            service?.stopTimer()
-        }
+        service?.let {
+            if (isChecked) {
+                val time = getMillisFromPickers()
+                prefProvider.lastTime = time
+                it.startTimer(time)
+            } else {
+                it.stopTimer()
+            }
+        } ?: bindService()
+
     }
 
     private fun bindService() {
-        getApplication<Application>().apply {
-            bindService(
-                bindServiceIntent,
-                serviceConnection,
-                Context.BIND_AUTO_CREATE
-            )
+        context.apply {
+//            startService(serviceIntent)     // For the service to survive the viewmodel
+            bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             val intFilter = IntentFilter(TimerService.BROADCAST_ACTION)
             registerReceiver(broadcastReceiver, intFilter)
         }
+    }
+
+    private fun unbindService() {
+        if (!bound) return
+        service?.countDownMillis?.removeObserver(countDownMillisObserver)
+        context.apply {
+            unbindService(serviceConnection)
+            unregisterReceiver(broadcastReceiver)
+        }
+        bound = false
     }
 
     fun showNotification() {
@@ -129,9 +138,7 @@ class TimerViewModel(
 
     override fun onCleared() {
         toggleButtonState.removeObserver(toggleButtonObserver)
-        service?.countDownMillis?.removeObserver(countDownMillisObserver)
-        service = null
-        getApplication<Application>().unregisterReceiver(broadcastReceiver)
+        unbindService()
     }
 
 }
