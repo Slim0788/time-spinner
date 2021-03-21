@@ -1,6 +1,13 @@
 <resources>
+    <!-- Application name -->
     <string name="app_name">Time Spinner</string>
 
+    <!-- Buttons -->
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
+    <string name="button_reset">Reset</string>
+
+    <!-- Notification -->
+    <string name="notification_text">Timer is running</string>
+
 </resources>

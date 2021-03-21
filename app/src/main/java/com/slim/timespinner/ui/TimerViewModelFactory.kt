@@ -1,18 +1,17 @@
 package com.slim.timespinner.ui
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.slim.timespinner.settings.PrefProvider
-import com.slim.timespinner.utils.SoundPlayer
 
-class TimerViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class TimerViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return if (modelClass == TimerViewModel::class.java) {
             @Suppress("UNCHECKED_CAST")
             TimerViewModel(
-                createSoundPlayer(),
+                application,
                 createPrefProvider()
             ) as T
         } else {
@@ -20,8 +19,6 @@ class TimerViewModelFactory(private val context: Context) : ViewModelProvider.Fa
         }
     }
 
-    private fun createSoundPlayer() = SoundPlayer(context)
-
-    private fun createPrefProvider() = PrefProvider(context)
+    private fun createPrefProvider() = PrefProvider(application.applicationContext)
 
 }

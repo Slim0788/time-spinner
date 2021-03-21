@@ -30,7 +30,7 @@
                 app:np_max="23"
                 app:np_min="0"
                 app:np_onValueChange="@{viewmodel.onScrollStateChange}"
-                app:np_value="@{viewmodel.hoursPicker}" />
+                app:np_value="@={viewmodel.hoursPicker}" />
 
             <View
                 android:layout_width="4dp"
@@ -49,7 +49,7 @@
                 app:np_max="59"
                 app:np_min="0"
                 app:np_onValueChange="@{viewmodel.onScrollStateChange}"
-                app:np_value="@{viewmodel.minutesPicker}" />
+                app:np_value="@={viewmodel.minutesPicker}" />
 
             <View
                 android:layout_width="4dp"
@@ -68,7 +68,7 @@
                 app:np_max="59"
                 app:np_min="0"
                 app:np_onValueChange="@{viewmodel.onScrollStateChange}"
-                app:np_value="@{viewmodel.secondsPicker}" />
+                app:np_value="@={viewmodel.secondsPicker}" />
         </LinearLayout>
 
         <ImageView

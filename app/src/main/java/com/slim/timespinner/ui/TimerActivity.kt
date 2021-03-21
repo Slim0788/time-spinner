@@ -1,5 +1,6 @@
 package com.slim.timespinner.ui
 
+import android.media.AudioManager
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,14 @@ class TimerActivity : AppCompatActivity() {
             lifecycleOwner = this@TimerActivity
             viewmodel = viewModel
         }
+        volumeControlStream = AudioManager.STREAM_ALARM
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        if (!hasFocus)
+            viewModel.showNotification()
+        else
+            viewModel.hideNotification()
     }
 
 }
