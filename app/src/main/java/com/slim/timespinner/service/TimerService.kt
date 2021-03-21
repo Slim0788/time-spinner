@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.slim.timespinner.R
@@ -17,7 +18,9 @@ import com.slim.timespinner.utils.SoundPlayer
 import java.util.*
 
 private const val COUNT_DOWN_INTERVAL = 1000L   //1 second - count interval
-private const val CHANNEL_ID = "Random number notification"
+private const val NOTIFICATION_ID = 2186
+private const val CHANNEL_ID = "Time Spinner channel"
+private const val CHANNEL_NAME = "Time Spinner"
 
 class TimerService : Service() {
 
@@ -56,62 +59,61 @@ class TimerService : Service() {
             }
         })
 
-
     private fun createSoundPlayer() = SoundPlayer(applicationContext)
 
     fun startForeground() {
-        if (!timer.isRunning) {
-            return
-        }
+        if (!timer.isRunning) return
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .newWakeLock(1, "com.slim.timespinner.service:TimerService")
-        wakeLock?.setReferenceCounted(false)
+        wakeLock?.apply {
+            setReferenceCounted(false)
+            acquire(10)
+        }
+        startForeground(NOTIFICATION_ID, createNotification())
+    }
 
-        wakeLock?.acquire(10)
+    fun stopForeground() {
+        stopForeground(true)
+    }
 
+    private fun createNotification(): Notification {
+        val notificationManager = NotificationManagerCompat.from(this)
 
-        val channel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
                 CHANNEL_ID,
-                "My Channel",
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
-        } else {
-            TODO("VERSION.SDK_INT < O")
+            notificationManager.createNotificationChannel(channel)
         }
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            channel
-        )
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.notification_text))
             .setSmallIcon(R.drawable.ic_notification)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(getPendingIntent())
+            .setAutoCancel(true)
+            .setColorized(true)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
 //            .addAction(R.drawable.ic_notification, "STOP", getPendingIntent())
 //            .addAction(R.drawable.ic_notification, "RESET", getPendingIntent())
-            .setAutoCancel(true)
             .build()
-        startForeground(1, notification)
     }
 
     private fun getPendingIntent(): PendingIntent {
-
         val intent = Intent(this, TimerActivity::class.java)
         intent.apply {
 //            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(
+
+        return PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
         )
-
-        return pendingIntent
-
-//        val pendingShowApp: PendingIntent =
-//            PendingIntent.getService(this, REQUEST_CODE_UPCOMING, showApp,
-//                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     fun startTimer(millisInFuture: Long) {
@@ -122,6 +124,7 @@ class TimerService : Service() {
     fun updateTimer(updateTime: Long) {
         if (timer.isRunning)
             timer.update(updateTime)
+//        notificationManager.notify(NOTIFICATION_ID, createNotification())
     }
 
     fun stopTimer() {

@@ -12,7 +12,7 @@ class SoundPlayer(context: Context) {
 
     private fun createSoundPoolWithBuilder(): SoundPool {
         val attributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_GAME)
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
         return SoundPool.Builder()

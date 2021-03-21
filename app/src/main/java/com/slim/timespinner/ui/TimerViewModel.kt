@@ -129,11 +129,11 @@ class TimerViewModel(
     }
 
     fun showNotification() {
-//        service?.startForeground()
+        service?.startForeground()
     }
 
     fun hideNotification() {
-//        Toast.makeText(getApplication(), "Hide notification", Toast.LENGTH_SHORT).show()
+        service?.stopForeground()
     }
 
     override fun onCleared() {
