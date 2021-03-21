@@ -9,6 +9,7 @@
         <item name="android:textOff">@string/button_start</item>
         <item name="android:textOn">@string/button_stop</item>
         <item name="android:height">144dp</item>
+        <item name="android:letterSpacing">0.1</item>
         <item name="android:minWidth">160dp</item>
         <item name="android:fontFamily">@font/gilroy_bold</item>
         <item name="fontFamily">@font/gilroy_bold</item>
