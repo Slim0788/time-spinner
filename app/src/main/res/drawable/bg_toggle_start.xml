@@ -2,8 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="0.0"
-        android:endColor="@color/gradient_end_start"
-        android:startColor="@color/gradient_start_start"
+        android:endColor="@color/gradient_unchecked_end"
+        android:startColor="@color/gradient_unchecked_start"
         android:type="linear" />
-    <corners android:radius="8dp" />
+    <corners android:radius="@dimen/button_corner_radius" />
+    <stroke
+        android:width="@dimen/button_stroke_width"
+        android:color="?attr/colorAccent" />
 </shape>

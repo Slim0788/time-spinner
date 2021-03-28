@@ -12,8 +12,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_spinners">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,12 +31,13 @@
                 app:np_onValueChange="@{viewmodel.onScrollStateChange}"
                 app:np_value="@={viewmodel.hoursPicker}" />
 
-            <View
-                android:layout_width="4dp"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/shape_divider" />
+                android:layout_marginTop="@dimen/divider_margin"
+                android:layout_marginBottom="@dimen/divider_margin"
+                android:background="@drawable/shape_divider"
+                tools:ignore="ContentDescription" />
 
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/numberPicker_minutes"
@@ -51,12 +51,13 @@
                 app:np_onValueChange="@{viewmodel.onScrollStateChange}"
                 app:np_value="@={viewmodel.minutesPicker}" />
 
-            <View
-                android:layout_width="4dp"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/shape_divider" />
+                android:layout_marginTop="@dimen/divider_margin"
+                android:layout_marginBottom="@dimen/divider_margin"
+                android:background="@drawable/shape_divider"
+                tools:ignore="ContentDescription" />
 
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/numberPicker_seconds"

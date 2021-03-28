@@ -1,15 +1,15 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- Application theme -->
     <style name="Theme.TimeSpinner" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="colorPrimaryDark">@color/blue_700</item>
-        <item name="colorAccent">@color/blue_100</item>
-        <item name="android:colorBackground">?attr/colorPrimaryDark</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
+        <!-- Colors -->
+        <item name="colorPrimary">@color/gray</item>
+        <item name="colorAccent">@color/orange</item>
 
-        <!-- Styles-->
+        <item name="android:colorBackground">?attr/colorPrimary</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+
+        <!-- Styles -->
         <item name="android:buttonStyleToggle">@style/Widget.Button.Toggle</item>
     </style>
-
 </resources>
