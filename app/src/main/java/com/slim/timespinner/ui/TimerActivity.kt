@@ -27,10 +27,7 @@ class TimerActivity : AppCompatActivity() {
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
-        if (!hasFocus)
-            viewModel.showNotification()
-        else
-            viewModel.hideNotification()
+        viewModel.toggleNotification(!hasFocus)
     }
 
 }

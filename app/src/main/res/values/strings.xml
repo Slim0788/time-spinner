@@ -8,6 +8,7 @@
     <string name="button_reset">Reset</string>
 
     <!-- Notification -->
-    <string name="notification_text">Timer is running</string>
+    <string name="notification_text_running">Timer is running</string>
+    <string name="notification_text_stopped">Timer stopped</string>
 
 </resources>

@@ -128,12 +128,10 @@ class TimerViewModel(
         bound = false
     }
 
-    fun showNotification() {
-        service?.startForeground()
-    }
-
-    fun hideNotification() {
-        service?.stopForeground()
+    fun toggleNotification(isShow: Boolean) {
+        service?.let {
+            if (isShow) it.startForeground() else it.stopForeground()
+        }
     }
 
     override fun onCleared() {
