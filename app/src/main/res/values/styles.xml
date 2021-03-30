@@ -3,7 +3,6 @@
 
     <style name="Widget.Button.Toggle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/bg_toggle</item>
-        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">36sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textOff">@string/button_start</item>
@@ -19,12 +18,10 @@
         <item name="np_dividerColor">@android:color/transparent</item>
         <item name="np_fadingEdgeStrength">1.0</item>
         <item name="np_formatter">%02d</item>
-        <item name="np_selectedTextColor">@color/white</item>
+        <item name="np_selectedTextColor">?android:attr/textColor</item>
         <item name="np_selectedTextSize">64dp</item>
-        <item name="np_textColor">@color/white</item>
+        <item name="np_textColor">?android:attr/textColor</item>
         <item name="np_textSize">64dp</item>
         <item name="np_wheelItemCount">5</item>
-        <item name="np_selectedTypeface">sans-serif-black</item>
-        <item name="np_typeface">sans-serif-black</item>
     </style>
 </resources>

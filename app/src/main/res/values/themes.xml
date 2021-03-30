@@ -4,6 +4,7 @@
         <!-- Colors -->
         <item name="colorPrimary">@color/gray</item>
         <item name="colorAccent">@color/orange</item>
+        <item name="android:textColor">@color/white</item>
 
         <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>

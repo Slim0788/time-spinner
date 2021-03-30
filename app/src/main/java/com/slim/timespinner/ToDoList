@@ -7,5 +7,9 @@
 4. Не работает принудительное увеличение громкости
 
 5. Не подхватывается шрифт на цифрах. Может перенести библиотеку в проект и всё настроить на месте
+http://developer.alexanderklimov.ru/android/theory/assets.php#customfont
+https://blog.mindorks.com/using-custom-and-downloadable-fonts-in-android
+https://medium.com/programming-lite/using-custom-font-as-resources-in-android-app-6331477f8f57
+https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
 
 6. Нет инертности при скроле спинера
