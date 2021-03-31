@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <com.slim.timespinner.ui.picker.NumberPicker
                 android:id="@+id/numberPicker_hours"
                 style="@style/Widget.NumberPicker"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:background="@drawable/shape_divider"
                 tools:ignore="ContentDescription" />
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <com.slim.timespinner.ui.picker.NumberPicker
                 android:id="@+id/numberPicker_minutes"
                 style="@style/Widget.NumberPicker"
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:background="@drawable/shape_divider"
                 tools:ignore="ContentDescription" />
 
-            <com.shawnlin.numberpicker.NumberPicker
+            <com.slim.timespinner.ui.picker.NumberPicker
                 android:id="@+id/numberPicker_seconds"
                 style="@style/Widget.NumberPicker"
                 android:layout_width="wrap_content"

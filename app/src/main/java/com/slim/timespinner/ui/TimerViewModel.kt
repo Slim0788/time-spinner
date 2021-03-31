@@ -7,11 +7,11 @@ import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.shawnlin.numberpicker.NumberPicker
 import com.slim.timespinner.R
 import com.slim.timespinner.service.TimerService
 import com.slim.timespinner.service.TimerService.TimerServiceBinder
 import com.slim.timespinner.settings.PrefProvider
+import com.slim.timespinner.ui.picker.NumberPicker
 
 private const val secondsInMilli = 1000                 //1 second = 1000 milliseconds
 private const val minutesInMilli = secondsInMilli * 60  //1 minute = 60 seconds

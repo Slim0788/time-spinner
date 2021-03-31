@@ -3,7 +3,7 @@ package com.slim.timespinner.utils
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
-import com.shawnlin.numberpicker.NumberPicker
+import com.slim.timespinner.ui.picker.NumberPicker
 
 object BindingAdapters {
 
