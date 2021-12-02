@@ -16,7 +16,8 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".ui.TimerActivity"
-            android:launchMode="singleInstance">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

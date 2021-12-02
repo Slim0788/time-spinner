@@ -15,6 +15,8 @@ import com.slim.timespinner.R
 import com.slim.timespinner.ui.TimerActivity
 import com.slim.timespinner.utils.CountDownTimer
 import com.slim.timespinner.utils.SoundPlayer
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 private const val COUNT_DOWN_INTERVAL = 1000L   //1 second - count interval
@@ -22,20 +24,51 @@ private const val NOTIFICATION_ID = 2186
 private const val CHANNEL_ID = "Time Spinner channel"
 private const val CHANNEL_NAME = "Time Spinner"
 
+private const val ACTION_NOTIFICATION_START = "com.slim.timespinner.service:Start"
+private const val ACTION_NOTIFICATION_STOP = "com.slim.timespinner.service:Stop"
+private const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.service:Reset"
+
+// https://android.googlesource.com/platform/packages/apps/DeskClock/
 class TimerService : Service() {
+
+    private val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val soundPlayer: SoundPlayer by lazy { createSoundPlayer() }
 
     private val binder: IBinder = TimerServiceBinder()
 
+    private lateinit var notificationManager: NotificationManagerCompat
+
     private var wakeLock: PowerManager.WakeLock? = null
+    private var isForeground = false
 
     private val _countDownMillis = MutableLiveData<Long>()
     val countDownMillis: LiveData<Long> = _countDownMillis
 
     companion object {
         const val BROADCAST_ACTION = "BROADCAST_ACTION"
+    }
+
+    override fun onCreate() {
+        notificationManager = NotificationManagerCompat.from(this)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_NOTIFICATION_START -> {
+                startTimer(5000L)
+            }
+            ACTION_NOTIFICATION_STOP -> {
+                stopTimer()
+            }
+            ACTION_NOTIFICATION_RESET -> {
+                stopTimer()
+                stopForeground()
+                onDestroy()
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent?): IBinder {
@@ -50,6 +83,8 @@ class TimerService : Service() {
                     _countDownMillis.value = millisUntilFinished + COUNT_DOWN_INTERVAL
                 else
                     _countDownMillis.value = millisUntilFinished
+
+                updateNotification(millisUntilFinished)
             }
 
             override fun onFinish() {
@@ -70,16 +105,25 @@ class TimerService : Service() {
             setReferenceCounted(false)
             acquire(10)
         }
-        startForeground(NOTIFICATION_ID, createNotification())
+        startForeground(NOTIFICATION_ID, createNotification().build())
+        isForeground = true
     }
 
     fun stopForeground() {
         stopForeground(true)
+        isForeground = false
     }
 
-    private fun createNotification(): Notification {
-        val notificationManager = NotificationManagerCompat.from(this)
+    private fun updateNotification(timeInMillis: Long) {
+        if (isForeground) {
+            val notification = createNotification()
+            notification.setContentText(dateFormat.format(timeInMillis))
 
+            notificationManager.notify(NOTIFICATION_ID, notification.build())
+        }
+    }
+
+    private fun createNotification(): NotificationCompat.Builder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -90,30 +134,60 @@ class TimerService : Service() {
         }
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.notification_text))
+            .setContentTitle(getString(R.string.notification_text_running))
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentIntent(getPendingIntent())
+            .setShowWhen(false)
+            .setOngoing(true)
+            .setLocalOnly(true)
             .setAutoCancel(true)
             .setColorized(true)
-            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .setSilent(true)
+            .setContentIntent(getPendingIntent())
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
-//            .addAction(R.drawable.ic_notification, "STOP", getPendingIntent())
-//            .addAction(R.drawable.ic_notification, "RESET", getPendingIntent())
-            .build()
+            .addAction(
+                R.drawable.ic_notification_start,
+                applicationContext.getString(R.string.button_start),
+                getPendingIntentStartTimer()
+            )
+            .addAction(
+                R.drawable.ic_notification_stop,
+                applicationContext.getString(R.string.button_stop),
+                getPendingIntentStopTimer()
+            )
+            .addAction(
+                R.drawable.ic_notification_reset,
+                applicationContext.getString(R.string.button_reset),
+                getPendingIntentResetTimer()
+            )
+//            .build()
     }
 
     private fun getPendingIntent(): PendingIntent {
         val intent = Intent(this, TimerActivity::class.java)
-        intent.apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
         return PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT
         )
+    }
+
+    private fun getPendingIntentStartTimer(): PendingIntent {
+        val intent = Intent(this, TimerService::class.java)
+        intent.action = ACTION_NOTIFICATION_START
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun getPendingIntentStopTimer(): PendingIntent {
+        val intent = Intent(this, TimerService::class.java)
+        intent.action = ACTION_NOTIFICATION_STOP
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun getPendingIntentResetTimer(): PendingIntent {
+        val intent = Intent(this, TimerService::class.java)
+        intent.action = ACTION_NOTIFICATION_RESET
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     fun startTimer(millisInFuture: Long) {
@@ -124,13 +198,14 @@ class TimerService : Service() {
     fun updateTimer(updateTime: Long) {
         if (timer.isRunning)
             timer.update(updateTime)
-//        notificationManager.notify(NOTIFICATION_ID, createNotification())
     }
 
     fun stopTimer() {
         if (timer.isRunning)
             timer.cancel()
     }
+
+    fun isTimerRunning() = timer.isRunning
 
 
     inner class TimerServiceBinder : Binder() {

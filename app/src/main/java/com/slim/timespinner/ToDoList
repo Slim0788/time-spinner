@@ -1,15 +1,25 @@
 1. В Notification таймер спешит на секунду
 
-2. Проверять при старте запущен ли таймер. Переключать кнопку в соответствующий режим
 
 3. Не всегда срабатывает звук.
 
 4. Не работает принудительное увеличение громкости
 
-5. Не подхватывается шрифт на цифрах. Может перенести библиотеку в проект и всё настроить на месте
+5. Не подхватывается шрифт на цифрах
 http://developer.alexanderklimov.ru/android/theory/assets.php#customfont
 https://blog.mindorks.com/using-custom-and-downloadable-fonts-in-android
 https://medium.com/programming-lite/using-custom-font-as-resources-in-android-app-6331477f8f57
 https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
 
 6. Нет инертности при скроле спинера
+
+7. Обратная связь сервиса и активити
+
+8. Выделить билдер нотификаций и оформить нотификации правильно для всех версий
+
+9. Добавить PIP
+https://developer.android.com/guide/topics/ui/picture-in-picture
+https://github.com/android/media-samples
+
+Баг при переходе из Notification когда есть PIP
+https://stackoverflow.com/questions/54028535/launching-intent-from-notification-opening-in-picture-in-picture-window

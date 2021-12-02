@@ -134,6 +134,12 @@ class TimerViewModel(
         }
     }
 
+    fun checkButtonState() {
+        service?.let {
+            toggleButtonState.value = it.isTimerRunning()
+        }
+    }
+
     override fun onCleared() {
         toggleButtonState.removeObserver(toggleButtonObserver)
         unbindService()

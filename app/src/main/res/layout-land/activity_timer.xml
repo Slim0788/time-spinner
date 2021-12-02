@@ -17,6 +17,7 @@
         android:orientation="horizontal">
 
         <include
+            android:id="@+id/include"
             layout="@layout/number_pickers"
             android:layout_width="0dp"
             android:layout_height="match_parent"

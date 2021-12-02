@@ -483,17 +483,17 @@ public class NumberPicker extends LinearLayout {
     private VelocityTracker mVelocityTracker;
 
     /**
-     * @see ViewConfiguration#getScaledTouchSlop()
+     * @see ViewConfiguration#getScaledTouchSlop
      */
     private int mTouchSlop;
 
     /**
-     * @see ViewConfiguration#getScaledMinimumFlingVelocity()
+     * @see ViewConfiguration#getScaledMinimumFlingVelocity
      */
     private int mMinimumFlingVelocity;
 
     /**
-     * @see ViewConfiguration#getScaledMaximumFlingVelocity()
+     * @see ViewConfiguration#getScaledMaximumFlingVelocity
      */
     private int mMaximumFlingVelocity;
 
@@ -525,7 +525,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * The thickness of the divider.
      */
-    private int mDividerLength;
+    private final int mDividerLength;
 
     /**
      * The thickness of the divider.
@@ -570,7 +570,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * Flag whether the selector wheel should hidden until the picker has focus.
      */
-    private boolean mHideWheelUntilFocused;
+    private final boolean mHideWheelUntilFocused;
 
     /**
      * The orientation of this widget.
@@ -610,12 +610,12 @@ public class NumberPicker extends LinearLayout {
     /**
      * Flag whether the accessibility description enabled.
      */
-    private boolean mAccessibilityDescriptionEnabled = true;
+    private boolean mAccessibilityDescriptionEnabled;
 
     /**
      * The context of this widget.
      */
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * The number formatter for current locale.
@@ -625,7 +625,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * The view configuration of this widget.
      */
-    private ViewConfiguration mViewConfiguration;
+    private final ViewConfiguration mViewConfiguration;
 
     /**
      * Interface to listen for changes of the current value.
@@ -654,23 +654,23 @@ public class NumberPicker extends LinearLayout {
 
         @IntDef({SCROLL_STATE_IDLE, SCROLL_STATE_TOUCH_SCROLL, SCROLL_STATE_FLING})
         @Retention(RetentionPolicy.SOURCE)
-        public @interface ScrollState {
+        @interface ScrollState {
         }
 
         /**
          * The view is not scrolling.
          */
-        public static int SCROLL_STATE_IDLE = 0;
+        int SCROLL_STATE_IDLE = 0;
 
         /**
          * The user is scrolling using touch, and his finger is still on the screen.
          */
-        public static int SCROLL_STATE_TOUCH_SCROLL = 1;
+        int SCROLL_STATE_TOUCH_SCROLL = 1;
 
         /**
          * The user had previously been scrolling using touch and performed a fling.
          */
-        public static int SCROLL_STATE_FLING = 2;
+        int SCROLL_STATE_FLING = 2;
 
         /**
          * Callback invoked while the number picker scroll state has changed.

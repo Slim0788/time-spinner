@@ -26,7 +26,7 @@ class TimerActivity : AppCompatActivity() {
         }
         volumeControlStream = AudioManager.STREAM_ALARM
 
-        binding.include?.apply {
+        binding.include.apply {
             val typeface = ResourcesCompat.getFont(applicationContext, R.font.gilroy_bold)
             numberPickerHours.typeface = typeface
             numberPickerHours.setSelectedTypeface(typeface)
@@ -38,7 +38,10 @@ class TimerActivity : AppCompatActivity() {
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
-        viewModel.toggleNotification(!hasFocus)
+        viewModel.apply {
+            toggleNotification(!hasFocus)
+            checkButtonState()
+        }
     }
 
 }
