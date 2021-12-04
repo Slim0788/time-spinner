@@ -1,6 +1,9 @@
 package com.slim.timespinner.service
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
@@ -15,11 +18,9 @@ import com.slim.timespinner.R
 import com.slim.timespinner.ui.TimerActivity
 import com.slim.timespinner.utils.CountDownTimer
 import com.slim.timespinner.utils.SoundPlayer
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import com.slim.timespinner.utils.TimeFormatter
 
-private const val COUNT_DOWN_INTERVAL = 1000L   //1 second - count interval
+private const val COUNT_DOWN_INTERVAL = 1000L   // 1 second - count interval
 private const val NOTIFICATION_ID = 2186
 private const val CHANNEL_ID = "Time Spinner channel"
 private const val CHANNEL_NAME = "Time Spinner"
@@ -30,8 +31,6 @@ private const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.service:Rese
 
 // https://android.googlesource.com/platform/packages/apps/DeskClock/
 class TimerService : Service() {
-
-    private val dateFormat: DateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val soundPlayer: SoundPlayer by lazy { createSoundPlayer() }
@@ -79,12 +78,13 @@ class TimerService : Service() {
         CountDownTimer(COUNT_DOWN_INTERVAL, object : CountDownTimer.OnCountDownListener {
 
             override fun onTick(millisUntilFinished: Long) {
-                if (millisUntilFinished != 0L)
-                    _countDownMillis.value = millisUntilFinished + COUNT_DOWN_INTERVAL
-                else
-                    _countDownMillis.value = millisUntilFinished
-
-                updateNotification(millisUntilFinished)
+                val millisLeft = if (millisUntilFinished != 0L) {
+                    millisUntilFinished + COUNT_DOWN_INTERVAL
+                } else {
+                    millisUntilFinished
+                }
+                _countDownMillis.value = millisLeft
+                updateNotification(millisLeft)
             }
 
             override fun onFinish() {
@@ -117,8 +117,7 @@ class TimerService : Service() {
     private fun updateNotification(timeInMillis: Long) {
         if (isForeground) {
             val notification = createNotification()
-            notification.setContentText(dateFormat.format(timeInMillis))
-
+            notification.setContentText(TimeFormatter.getFormattedTime(timeInMillis))
             notificationManager.notify(NOTIFICATION_ID, notification.build())
         }
     }

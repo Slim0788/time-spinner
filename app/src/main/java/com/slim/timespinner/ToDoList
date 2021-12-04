@@ -1,5 +1,3 @@
-1. В Notification таймер спешит на секунду
-
 
 3. Не всегда срабатывает звук.
 
@@ -23,3 +21,6 @@ https://github.com/android/media-samples
 
 Баг при переходе из Notification когда есть PIP
 https://stackoverflow.com/questions/54028535/launching-intent-from-notification-opening-in-picture-in-picture-window
+
+еще проблемы
+https://medium.com/androiddevelopers/navigation-patterns-with-pip-2c5b6a446ba0

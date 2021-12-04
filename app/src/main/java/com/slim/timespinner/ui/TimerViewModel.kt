@@ -12,10 +12,9 @@ import com.slim.timespinner.service.TimerService
 import com.slim.timespinner.service.TimerService.TimerServiceBinder
 import com.slim.timespinner.settings.PrefProvider
 import com.slim.timespinner.ui.picker.NumberPicker
-
-private const val secondsInMilli = 1000                 //1 second = 1000 milliseconds
-private const val minutesInMilli = secondsInMilli * 60  //1 minute = 60 seconds
-private const val hoursInMilli = minutesInMilli * 60    //1 hour = 60 x 60 = 3600 seconds
+import com.slim.timespinner.utils.TimeFormatter.hoursInMilli
+import com.slim.timespinner.utils.TimeFormatter.minutesInMilli
+import com.slim.timespinner.utils.TimeFormatter.secondsInMilli
 
 class TimerViewModel(
     application: Application,
@@ -33,7 +32,7 @@ class TimerViewModel(
 
     @SuppressLint("StaticFieldLeak")
     private var service: TimerService? = null
-    private var bound = false
+    private var isServiceBind = false
     private val serviceIntent = Intent(context, TimerService::class.java)
 
     private val broadcastReceiver = object : BroadcastReceiver() {
@@ -49,12 +48,12 @@ class TimerViewModel(
             service = binder.service.also {
                 it.countDownMillis.observeForever(countDownMillisObserver)
             }
-            bound = true
+            isServiceBind = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
-            bound = false
+            isServiceBind = false
         }
     }
 
@@ -119,13 +118,13 @@ class TimerViewModel(
     }
 
     private fun unbindService() {
-        if (!bound) return
+        if (!isServiceBind) return
         service?.countDownMillis?.removeObserver(countDownMillisObserver)
         context.apply {
             unbindService(serviceConnection)
             unregisterReceiver(broadcastReceiver)
         }
-        bound = false
+        isServiceBind = false
     }
 
     fun toggleNotification(isShow: Boolean) {
