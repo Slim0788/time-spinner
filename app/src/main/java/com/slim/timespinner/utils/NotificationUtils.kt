@@ -12,16 +12,16 @@ import com.slim.timespinner.R
 import com.slim.timespinner.service.TimerService
 import com.slim.timespinner.ui.TimerActivity
 
-private const val CHANNEL_ID = "Time Spinner channel"
-private const val CHANNEL_NAME = "Time Spinner"
-
-const val NOTIFICATION_ID = 2186
-
-const val ACTION_NOTIFICATION_START = "com.slim.timespinner.service:Start"
-const val ACTION_NOTIFICATION_STOP = "com.slim.timespinner.service:Stop"
-const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.service:Reset"
-
 object NotificationUtils {
+
+    private const val CHANNEL_ID = "Time Spinner channel"
+    private const val CHANNEL_NAME = "Time Spinner"
+
+    const val NOTIFICATION_ID = 2186
+
+    const val ACTION_NOTIFICATION_START = "com.slim.timespinner.service:Start"
+    const val ACTION_NOTIFICATION_STOP = "com.slim.timespinner.service:Stop"
+    const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.service:Reset"
 
     fun createNotificationManager(context: Context) = NotificationManagerCompat.from(context)
         .apply {

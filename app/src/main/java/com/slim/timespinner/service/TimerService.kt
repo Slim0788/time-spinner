@@ -11,6 +11,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.slim.timespinner.utils.*
+import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_RESET
+import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_START
+import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_STOP
+import com.slim.timespinner.utils.NotificationUtils.NOTIFICATION_ID
 
 private const val COUNT_DOWN_INTERVAL = 1000L   // 1 second - count interval
 
