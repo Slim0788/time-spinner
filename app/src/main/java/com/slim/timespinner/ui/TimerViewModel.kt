@@ -110,7 +110,6 @@ class TimerViewModel(
 
     private fun bindService() {
         context.apply {
-//            startService(serviceIntent)     // For the service to survive the viewmodel
             bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             val intFilter = IntentFilter(TimerService.BROADCAST_ACTION)
             registerReceiver(broadcastReceiver, intFilter)
