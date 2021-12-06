@@ -1,5 +1,6 @@
 package com.slim.timespinner.service
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,11 +11,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.slim.timespinner.utils.*
+import androidx.lifecycle.Observer
+import com.slim.timespinner.utils.CountDownTimer
+import com.slim.timespinner.utils.NotificationUtils
 import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_RESET
 import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_START
 import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_STOP
 import com.slim.timespinner.utils.NotificationUtils.NOTIFICATION_ID
+import com.slim.timespinner.utils.SoundPlayer
+import com.slim.timespinner.utils.TimeFormatter
 
 private const val COUNT_DOWN_INTERVAL = 1000L   // 1 second - count interval
 
@@ -23,6 +28,10 @@ class TimerService : Service() {
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val soundPlayer: SoundPlayer by lazy { createSoundPlayer() }
+
+    private val countDownMillisObserver = Observer<Long> {
+        updateNotification(TimeFormatter.getFormattedTime(it))
+    }
 
     private val binder: IBinder = TimerServiceBinder()
 
@@ -33,7 +42,16 @@ class TimerService : Service() {
         NotificationUtils.createNotification(this)
     }
 
-    private var wakeLock: PowerManager.WakeLock? = null
+    private val wakeLock: PowerManager.WakeLock by lazy {
+        (getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "com.slim.timespinner.service:TimerService"
+            )
+            .apply {
+                setReferenceCounted(false)
+            }
+    }
     private var isForeground = false
 
     private val _countDownMillis = MutableLiveData<Long>()
@@ -50,7 +68,9 @@ class TimerService : Service() {
             }
             ACTION_NOTIFICATION_STOP -> {
                 stopTimer()
-                updateNotification(countDownMillis.value ?: 0)
+                updateNotification(
+                    TimeFormatter.getFormattedTime(countDownMillis.value ?: 0)
+                )
             }
             ACTION_NOTIFICATION_RESET -> {
                 stopTimer()
@@ -73,52 +93,46 @@ class TimerService : Service() {
                     millisUntilFinished
                 }
                 _countDownMillis.value = millisLeft
-                updateNotification(millisLeft)
             }
 
             override fun onFinish() {
                 soundPlayer.play()
                 sendBroadcast(Intent(BROADCAST_ACTION))
-                wakeLock?.release()
+                wakeLock.release()
             }
         })
 
     private fun createSoundPlayer() = SoundPlayer(applicationContext)
 
     fun startForeground() {
-        if (!timer.isRunning) return
+        if (!isTimerRunning) return
 
-        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
-            .newWakeLock(1, "com.slim.timespinner.service:TimerService")
-        wakeLock?.apply {
-            setReferenceCounted(false)
-            acquire(10)
-        }
         notificationBuilder.apply {
             NotificationUtils.setActionsToNotification(
-                this@TimerService, this, timer.isRunning
+                this@TimerService, this, isTimerRunning
             )
         }
             .build()
             .also {
                 startForeground(NOTIFICATION_ID, it)
             }
-
+        countDownMillis.observeForever(countDownMillisObserver)
         isForeground = true
     }
 
     fun stopForeground() {
         stopForeground(true)
+        countDownMillis.removeObserver(countDownMillisObserver)
         isForeground = false
     }
 
-    private fun updateNotification(timeInMillis: Long) {
+    private fun updateNotification(time: String) {
         if (isForeground) {
             notificationBuilder.apply {
-                setContentText(TimeFormatter.getFormattedTime(timeInMillis))
+                setContentText(time)
                 clearActions()
                 NotificationUtils.setActionsToNotification(
-                    this@TimerService, this, timer.isRunning
+                    this@TimerService, this, isTimerRunning
                 )
             }.also {
                 notificationManager.notify(NOTIFICATION_ID, it.build())
@@ -126,22 +140,28 @@ class TimerService : Service() {
         }
     }
 
+    @SuppressLint("WakelockTimeout")
     fun startTimer(millisInFuture: Long) {
-        if (!timer.isRunning)
+        if (!isTimerRunning) {
             timer.start(millisInFuture)
+            wakeLock.acquire()
+        }
     }
 
     fun updateTimer(updateTime: Long) {
-        if (timer.isRunning)
+        if (isTimerRunning) {
             timer.update(updateTime)
+            wakeLock.release()
+        }
     }
 
     fun stopTimer() {
-        if (timer.isRunning)
+        if (isTimerRunning)
             timer.cancel()
     }
 
-    fun isTimerRunning() = timer.isRunning
+    val isTimerRunning: Boolean
+        get() = timer.isRunning
 
 
     inner class TimerServiceBinder : Binder() {

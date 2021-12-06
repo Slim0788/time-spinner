@@ -134,7 +134,7 @@ class TimerViewModel(
 
     fun checkButtonState() {
         service?.let {
-            toggleButtonState.value = it.isTimerRunning()
+            toggleButtonState.value = it.isTimerRunning
         }
     }
 

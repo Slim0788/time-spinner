@@ -13,3 +13,11 @@ https://stackoverflow.com/questions/54028535/launching-intent-from-notification-
 
 еще проблемы
 https://medium.com/androiddevelopers/navigation-patterns-with-pip-2c5b6a446ba0
+
+5. добавить параметры для typeface в spinner
+
+6. Удалить лишнее из параметров spinner
+
+7. Перейти на SDk 31
+
+8. Оформить ReadMe
