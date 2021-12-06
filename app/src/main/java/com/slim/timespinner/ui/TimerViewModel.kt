@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.*
 import android.os.IBinder
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -15,6 +16,16 @@ import com.slim.timespinner.ui.picker.NumberPicker
 import com.slim.timespinner.utils.TimeFormatter.hoursInMilli
 import com.slim.timespinner.utils.TimeFormatter.minutesInMilli
 import com.slim.timespinner.utils.TimeFormatter.secondsInMilli
+
+const val ACTION_TIMER_FINISH = "ACTION_TIMER_FINISH"
+const val ACTION_TIMER_CONTROL = "ACTION_TIMER_CONTROL"
+
+const val EXTRA_CONTROL_TYPE = "EXTRA_CONTROL_TYPE"
+const val CONTROL_TYPE_START = 23
+const val CONTROL_TYPE_STOP = 21
+
+const val REQUEST_CODE_CONTROL_START = 78
+const val REQUEST_CODE_CONTROL_STOP = 54
 
 class TimerViewModel(
     application: Application,
@@ -37,8 +48,25 @@ class TimerViewModel(
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            setNumbersToPickers(prefProvider.lastTime)
-            toggleButtonState.value = false
+            if (intent == null) return
+            when (intent.action) {
+                ACTION_TIMER_FINISH -> {
+                    setNumbersToPickers(prefProvider.lastTime)
+                    toggleButtonState.value = false
+                }
+                ACTION_TIMER_CONTROL -> {
+                    when (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
+                        CONTROL_TYPE_START -> {
+                            Toast.makeText(context, "START", Toast.LENGTH_SHORT).show()
+                            toggleButtonState.value = true
+                        }
+                        CONTROL_TYPE_STOP -> {
+                            Toast.makeText(context, "STOP", Toast.LENGTH_SHORT).show()
+                            toggleButtonState.value = false
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -61,6 +89,11 @@ class TimerViewModel(
         toggleButtonState.observeForever(toggleButtonObserver)
         setNumbersToPickers(prefProvider.lastTime)
         bindService()
+        val intentFilter = IntentFilter().apply {
+            addAction(ACTION_TIMER_FINISH)
+            addAction(ACTION_TIMER_CONTROL)
+        }
+        context.registerReceiver(broadcastReceiver, intentFilter)
     }
 
     fun onScrollStateChange(picker: NumberPicker?, oldValue: Int, newValue: Int) {
@@ -105,24 +138,16 @@ class TimerViewModel(
                 it.stopTimer()
             }
         } ?: bindService()
-
     }
 
     private fun bindService() {
-        context.apply {
-            bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            val intFilter = IntentFilter(TimerService.BROADCAST_ACTION)
-            registerReceiver(broadcastReceiver, intFilter)
-        }
+        context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun unbindService() {
         if (!isServiceBind) return
         service?.countDownMillis?.removeObserver(countDownMillisObserver)
-        context.apply {
-            unbindService(serviceConnection)
-            unregisterReceiver(broadcastReceiver)
-        }
+        context.unbindService(serviceConnection)
         isServiceBind = false
     }
 
@@ -140,6 +165,7 @@ class TimerViewModel(
 
     override fun onCleared() {
         toggleButtonState.removeObserver(toggleButtonObserver)
+        context.unregisterReceiver(broadcastReceiver)
         unbindService()
     }
 

@@ -37,7 +37,7 @@ object NotificationUtils {
 
     fun createNotification(context: Context): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(context.getString(R.string.notification_text_running))
+            .setContentTitle(context.getString(R.string.timer_is_running))
             .setSmallIcon(R.drawable.ic_notification)
             .setShowWhen(false)
             .setOngoing(true)
@@ -58,23 +58,23 @@ object NotificationUtils {
     ): NotificationCompat.Builder {
         return notificationBuilder.apply {
             if (isTimerRunning) {
-                setContentTitle(context.getString(R.string.notification_text_running))
+                setContentTitle(context.getString(R.string.timer_is_running))
                 addAction(
-                    R.drawable.ic_notification_stop,
-                    context.getString(R.string.button_stop),
+                    R.drawable.ic_stop,
+                    context.getString(R.string.stop),
                     getPendingIntentStopTimer(context)
                 )
             } else {
-                setContentTitle(context.getString(R.string.notification_text_stopped))
+                setContentTitle(context.getString(R.string.timer_stopped))
                 addAction(
-                    R.drawable.ic_notification_start,
-                    context.getString(R.string.button_start),
+                    R.drawable.ic_start,
+                    context.getString(R.string.start),
                     getPendingIntentStartTimer(context)
                 )
             }
             addAction(
-                R.drawable.ic_notification_reset,
-                context.getString(R.string.button_reset),
+                R.drawable.ic_reset,
+                context.getString(R.string.reset),
                 getPendingIntentResetTimer(context)
             )
         }

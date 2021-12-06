@@ -5,8 +5,8 @@
         <item name="android:background">@drawable/bg_toggle</item>
         <item name="android:textSize">36sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textOff">@string/button_start</item>
-        <item name="android:textOn">@string/button_stop</item>
+        <item name="android:textOff">@string/start</item>
+        <item name="android:textOn">@string/stop</item>
         <item name="android:height">144dp</item>
         <item name="android:letterSpacing">0.1</item>
         <item name="android:minWidth">160dp</item>
@@ -19,9 +19,17 @@
         <item name="np_fadingEdgeStrength">1.0</item>
         <item name="np_formatter">%02d</item>
         <item name="np_selectedTextColor">?android:attr/textColor</item>
-        <item name="np_selectedTextSize">64dp</item>
+        <item name="np_selectedTextSize">@dimen/spinner_text_normal</item>
         <item name="np_textColor">?android:attr/textColor</item>
-        <item name="np_textSize">64dp</item>
+        <item name="np_textSize">@dimen/spinner_text_normal</item>
         <item name="np_wheelItemCount">5</item>
+    </style>
+
+    <style name="Widget.IconButton" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:drawableStart">@drawable/ic_picture_in_picture</item>
+        <item name="drawableTint">?attr/colorAccent</item>
     </style>
 </resources>

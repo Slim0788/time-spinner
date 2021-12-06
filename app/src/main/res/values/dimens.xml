@@ -9,4 +9,8 @@
     <dimen name="divider_margin">24dp</dimen>
     <dimen name="divider_width">4dp</dimen>
     <dimen name="divider_radius">2dp</dimen>
+
+    <!-- Spinner text size -->
+    <dimen name="spinner_text_normal">64dp</dimen>
+    <dimen name="spinner_text_minimize">24dp</dimen>
 </resources>

@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.slim.timespinner.ui.ACTION_TIMER_FINISH
 import com.slim.timespinner.utils.CountDownTimer
 import com.slim.timespinner.utils.NotificationUtils
 import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_RESET
@@ -28,10 +29,6 @@ class TimerService : Service() {
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val soundPlayer: SoundPlayer by lazy { createSoundPlayer() }
-
-    private val countDownMillisObserver = Observer<Long> {
-        updateNotification(TimeFormatter.getFormattedTime(it))
-    }
 
     private val binder: IBinder = TimerServiceBinder()
 
@@ -52,14 +49,18 @@ class TimerService : Service() {
                 setReferenceCounted(false)
             }
     }
-    private var isForeground = false
 
     private val _countDownMillis = MutableLiveData<Long>()
     val countDownMillis: LiveData<Long> = _countDownMillis
 
-    companion object {
-        const val BROADCAST_ACTION = "BROADCAST_ACTION"
+    private val countDownMillisObserver = Observer<Long> {
+        updateNotification(TimeFormatter.getFormattedTime(it))
     }
+
+    private var isForeground = false
+
+    val isTimerRunning: Boolean
+        get() = timer.isRunning
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
@@ -75,7 +76,6 @@ class TimerService : Service() {
             ACTION_NOTIFICATION_RESET -> {
                 stopTimer()
                 stopForeground()
-                onDestroy()
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -97,7 +97,7 @@ class TimerService : Service() {
 
             override fun onFinish() {
                 soundPlayer.play()
-                sendBroadcast(Intent(BROADCAST_ACTION))
+                sendBroadcast(Intent(ACTION_TIMER_FINISH))
                 wakeLock.release()
             }
         })
@@ -108,6 +108,7 @@ class TimerService : Service() {
         if (!isTimerRunning) return
 
         notificationBuilder.apply {
+            clearActions()
             NotificationUtils.setActionsToNotification(
                 this@TimerService, this, isTimerRunning
             )
@@ -159,9 +160,6 @@ class TimerService : Service() {
         if (isTimerRunning)
             timer.cancel()
     }
-
-    val isTimerRunning: Boolean
-        get() = timer.isRunning
 
 
     inner class TimerServiceBinder : Binder() {

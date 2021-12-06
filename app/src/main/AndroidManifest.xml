@@ -16,8 +16,11 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".ui.TimerActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

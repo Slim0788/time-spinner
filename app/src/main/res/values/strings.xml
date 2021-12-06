@@ -3,12 +3,12 @@
     <string name="app_name">Time Spinner</string>
 
     <!-- Buttons -->
-    <string name="button_start">Start</string>
-    <string name="button_stop">Stop</string>
-    <string name="button_reset">Reset</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
 
     <!-- Notification -->
-    <string name="notification_text_running">Timer is running</string>
-    <string name="notification_text_stopped">Timer stopped</string>
+    <string name="timer_is_running">Timer is running</string>
+    <string name="timer_stopped">Timer stopped</string>
 
 </resources>
