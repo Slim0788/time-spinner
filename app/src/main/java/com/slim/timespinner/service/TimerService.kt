@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.slim.timespinner.settings.PrefProvider
 import com.slim.timespinner.ui.ACTION_TIMER_FINISH
 import com.slim.timespinner.utils.CountDownTimer
 import com.slim.timespinner.utils.NotificationUtils
@@ -23,12 +24,13 @@ import com.slim.timespinner.utils.SoundPlayer
 import com.slim.timespinner.utils.TimeFormatter
 
 private const val COUNT_DOWN_INTERVAL = 1000L   // 1 second - count interval
+private const val WAKE_LOCK_TAG = "com.slim.timespinner.service:TimerService"
 
-// https://android.googlesource.com/platform/packages/apps/DeskClock/
 class TimerService : Service() {
 
     private val timer: CountDownTimer by lazy { getCountDown() }
     private val soundPlayer: SoundPlayer by lazy { createSoundPlayer() }
+    private val prefProvider: PrefProvider by lazy { PrefProvider(this) }
 
     private val binder: IBinder = TimerServiceBinder()
 
@@ -41,10 +43,7 @@ class TimerService : Service() {
 
     private val wakeLock: PowerManager.WakeLock by lazy {
         (getSystemService(Context.POWER_SERVICE) as PowerManager)
-            .newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "com.slim.timespinner.service:TimerService"
-            )
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
             .apply {
                 setReferenceCounted(false)
             }
@@ -96,8 +95,11 @@ class TimerService : Service() {
             }
 
             override fun onFinish() {
+                stopTimer()
                 soundPlayer.play()
                 sendBroadcast(Intent(ACTION_TIMER_FINISH))
+                _countDownMillis.value = prefProvider.lastTime
+                updateNotification(TimeFormatter.getFormattedTime(0))
                 wakeLock.release()
             }
         })
@@ -105,7 +107,7 @@ class TimerService : Service() {
     private fun createSoundPlayer() = SoundPlayer(applicationContext)
 
     fun startForeground() {
-        if (!isTimerRunning) return
+        if (!isTimerRunning || isForeground) return
 
         notificationBuilder.apply {
             clearActions()

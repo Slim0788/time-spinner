@@ -19,9 +19,10 @@ object NotificationUtils {
 
     const val NOTIFICATION_ID = 2186
 
-    const val ACTION_NOTIFICATION_START = "com.slim.timespinner.service:Start"
-    const val ACTION_NOTIFICATION_STOP = "com.slim.timespinner.service:Stop"
-    const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.service:Reset"
+    const val ACTION_NOTIFICATION_START = "com.slim.timespinner.utils:Start"
+    const val ACTION_NOTIFICATION_STOP = "com.slim.timespinner.utils:Stop"
+    const val ACTION_NOTIFICATION_RESET = "com.slim.timespinner.utils:Reset"
+    const val ACTION_NOTIFICATION_OPEN_APP = "com.slim.timespinner.utils:OpenApp"
 
     fun createNotificationManager(context: Context) = NotificationManagerCompat.from(context)
         .apply {
@@ -45,7 +46,7 @@ object NotificationUtils {
             .setAutoCancel(true)
             .setColorized(true)
             .setSilent(true)
-            .setContentIntent(getPendingIntent(context))
+            .setContentIntent(getPendingIntentOpenApp(context))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
@@ -80,8 +81,11 @@ object NotificationUtils {
         }
     }
 
-    private fun getPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, TimerActivity::class.java)
+    private fun getPendingIntentOpenApp(context: Context): PendingIntent {
+        val intent = Intent(context, TimerActivity::class.java).apply {
+//            action = ACTION_NOTIFICATION_OPEN_APP
+            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+        }
         return PendingIntent.getActivity(
             context, 0, intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_UPDATE_CURRENT

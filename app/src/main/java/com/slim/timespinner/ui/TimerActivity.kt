@@ -1,6 +1,7 @@
 package com.slim.timespinner.ui
 
 import android.annotation.TargetApi
+import android.app.ActivityManager
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
@@ -21,6 +22,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import com.slim.timespinner.R
 import com.slim.timespinner.databinding.ActivityTimerBinding
+import com.slim.timespinner.utils.NotificationUtils.ACTION_NOTIFICATION_OPEN_APP
 
 class TimerActivity : AppCompatActivity() {
 
@@ -64,6 +66,30 @@ class TimerActivity : AppCompatActivity() {
             updatePictureInPictureParams(it)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (it.action == ACTION_NOTIFICATION_OPEN_APP && isInPictureInPictureMode) {
+                    moveLauncherTaskToFront()
+                }
+            }
+        }
+    }
+
+    private fun moveLauncherTaskToFront() {
+        val activityManager = (getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+        val appTasks = activityManager.appTasks
+        for (task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val categories = baseIntent.categories
+            if (categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)) {
+                task.moveToFront()
+                return
+            }
+        }
     }
 
     override fun onPictureInPictureModeChanged(
@@ -152,7 +178,6 @@ class TimerActivity : AppCompatActivity() {
             )
         )
     }
-
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         viewModel.apply {

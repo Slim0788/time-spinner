@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.*
 import android.os.IBinder
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -56,15 +55,10 @@ class TimerViewModel(
                 }
                 ACTION_TIMER_CONTROL -> {
                     when (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
-                        CONTROL_TYPE_START -> {
-                            Toast.makeText(context, "START", Toast.LENGTH_SHORT).show()
-                            toggleButtonState.value = true
-                        }
-                        CONTROL_TYPE_STOP -> {
-                            Toast.makeText(context, "STOP", Toast.LENGTH_SHORT).show()
-                            toggleButtonState.value = false
-                        }
+                        CONTROL_TYPE_START -> toggleButtonState.value = true
+                        CONTROL_TYPE_STOP -> toggleButtonState.value = false
                     }
+                    toggleNotification(true)
                 }
             }
         }

@@ -4,15 +4,8 @@
 
 3. Нет инертности при скроле спинера
 
-4. Добавить PIP
-https://developer.android.com/guide/topics/ui/picture-in-picture
-https://github.com/android/media-samples
-
-Баг при переходе из Notification когда есть PIP
-https://stackoverflow.com/questions/54028535/launching-intent-from-notification-opening-in-picture-in-picture-window
-
-еще проблемы
-https://medium.com/androiddevelopers/navigation-patterns-with-pip-2c5b6a446ba0
+4. Сделать единым источником правды Service. Pip и Notification общаются с Service при помощи Intent
+   ViewModel подписывается на состояние Service.
 
 5. добавить параметры для typeface в spinner
 
